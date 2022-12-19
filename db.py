@@ -12,7 +12,7 @@ def start():
         connection.commit()
 
 
-def add_domen(url):
+def add_domain(url):
     with closing(sqlite3.connect(database)) as connection:
         cursor: sqlite3.Cursor = connection.cursor()
         cursor.execute(
@@ -20,7 +20,7 @@ def add_domen(url):
         connection.commit()
 
 
-def change_domen():
+def change_domain():
     with closing(sqlite3.connect(database)) as connection:
         cursor: sqlite3.Cursor = connection.cursor()
         cursor.execute("DELETE FROM urls WHERE is_active = true")

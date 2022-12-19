@@ -6,6 +6,7 @@ from aiogram.utils import executor
 from aiogram import Bot
 
 from config import *
+import db
 
 stor = MemoryStorage()
 
@@ -15,12 +16,12 @@ dp = Dispatcher(bot, storage=stor)
 main_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Добавить домен"))
 
 
-class DomenState(StatesGroup):
-    enter_domen = State()
+class DomainState(StatesGroup):
+    enter_domain = State()
 
 
 async def on_startup(_):
-    pass
+    db.start()
 
 
 @dp.message_handler(commands='start')
@@ -29,7 +30,7 @@ async def start_message(message: Message):
 
 
 @dp.message_handler(text="Добавить домен")
-async def add_domen(message: Message):
+async def add_domain(message: Message):
     pass
 
 
