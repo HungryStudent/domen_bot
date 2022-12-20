@@ -1,3 +1,4 @@
+from config import *
 from main import bot
 import requests
 import asyncio
@@ -14,18 +15,28 @@ def check(url):
 
 
 def change_domain(url):
-    req = requests.get("https://ppdomain.com/api/set_domain_offer/%7Bapi_key%7D?offer_id=%7Boffer_id%7D&url=%7Burl%7D")
+    req = requests.get(f"https://fenix.top/api/set_domain_offer/{api_key}?offer_id={offer_id}&url={url}", timeout=2)
+    print(req.json())
+    try:
+        return req.json()["error"]
+    except KeyError:
+        return 1
 
 
 async def main():
-    url = db.get_current_url()
-    print(check(url))
+    url = db.get_current_url()[0]
     if not check(url):
         new_url = db.change_domain()
         if new_url == "error":
             await bot.send_message(796644977, f"Закончились домены")
-        change_domain(new_url)
-        await bot.send_message(796644977, f"сменили домен на {new_url}")
+            session = await bot.get_session()
+            await session.close()
+            return
+        is_changed = change_domain(new_url)
+        if is_changed == 1:
+            await bot.send_message(796644977, f"сменили домен на {new_url}")
+        else:
+            await bot.send_message(796644977, f"Ошибка при смене домена\n\n{is_changed}")
     session = await bot.get_session()
     await session.close()
 
