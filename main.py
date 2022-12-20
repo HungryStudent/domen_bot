@@ -39,7 +39,7 @@ async def enter_domain(message: Message):
 @dp.message_handler(state="*", text="Отмена")
 async def cancel(message: Message, state: FSMContext):
     await state.finish()
-    await message.answer("Ввод остановлен")
+    await message.answer("Ввод остановлен", reply_markup=main_kb)
 
 
 @dp.message_handler(state=DomainState.enter_domain)
