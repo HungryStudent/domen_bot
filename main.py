@@ -123,8 +123,8 @@ async def show_project(call: CallbackQuery, state: FSMContext):
 async def add_domain(message: Message, state: FSMContext):
     data = await state.get_data()
     url = message.text
-    db.add_domain(url, data["project_id"])
-    await message.answer("Домен добавлен", reply_markup=kb.main)
+    domain_count = db.add_domain(url, data["project_id"])
+    await message.answer(f"Домен добавлен. Всего - {domain_count}", reply_markup=kb.main)
     await state.finish()
 
 

@@ -36,7 +36,9 @@ async def main():
                 return
             is_changed = change_domain(new_url, project[2])
             if is_changed == 1:
-                await bot.send_message(user_id, f"{project[1]} - {project[2]}\nсменили домен на {new_url}")
+                domain_count = db.get_domain_count(project[0])
+                await bot.send_message(user_id,
+                                       f"{project[1]} - {project[2]}\nсменили домен на {new_url}. Осталось - {domain_count}")
             else:
                 await bot.send_message(user_id, f"{project[1]} - {project[2]}\nОшибка при смене домена\n\n{is_changed}")
     session = await bot.get_session()

@@ -52,7 +52,10 @@ def add_domain(url, project_id):
         cursor: sqlite3.Cursor = connection.cursor()
         cursor.execute(
             "INSERT INTO urls(url, project_id, is_active) VALUES (?, ?, false)", (url, project_id))
+        cursor.execute("SELECT COUNT(*) FROM urls WHERE project_id = ?", (project_id,))
+        domain_count = cursor.fetchone()[0]
         connection.commit()
+        return domain_count
 
 
 def change_domain(project_id):
@@ -73,3 +76,11 @@ def get_current_url(project_id):
         cursor: sqlite3.Cursor = connection.cursor()
         cursor.execute("SELECT url FROM urls WHERE is_active = true and project_id = ?", (project_id,))
         return cursor.fetchone()
+
+
+def get_domain_count(project_id):
+    with closing(sqlite3.connect(database)) as connection:
+        cursor: sqlite3.Cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM urls WHERE project_id = ?", (project_id,))
+        domain_count = cursor.fetchone()[0]
+        return domain_count
