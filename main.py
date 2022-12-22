@@ -41,6 +41,12 @@ async def show_projects(message: Message):
     await message.answer("Список проектов", reply_markup=kb.get_projects(projects))
 
 
+@dp.message_handler(state="*", text="Отмена")
+async def cancel(message: Message, state: FSMContext):
+    await state.finish()
+    await message.answer("Ввод остановлен", reply_markup=kb.main)
+
+
 @dp.callback_query_handler(text="create_project")
 async def enter_name_to_project(call: CallbackQuery):
     await ProjectStates.enter_name.set()
@@ -81,7 +87,8 @@ async def back_to_projects(call: CallbackQuery):
 async def show_project(call: CallbackQuery):
     project_id = call.data.split(":")[1]
     project = db.get_project(project_id)
-    await call.message.edit_text(f"Выбран проект {project[0]} - {project[1]}", reply_markup=kb.get_add_domain(project_id))
+    await call.message.edit_text(f"Выбран проект {project[0]} - {project[1]}",
+                                 reply_markup=kb.get_add_domain(project_id))
 
 
 @dp.callback_query_handler(Text(startswith="delete"))
@@ -110,12 +117,6 @@ async def show_project(call: CallbackQuery, state: FSMContext):
     await state.update_data(project_id=project_id)
     await call.message.answer("Введите домен", reply_markup=kb.cancel)
     await call.answer()
-
-
-@dp.message_handler(state="*", text="Отмена")
-async def cancel(message: Message, state: FSMContext):
-    await state.finish()
-    await message.answer("Ввод остановлен", reply_markup=kb.main)
 
 
 @dp.message_handler(state=DomainState.enter_domain)
